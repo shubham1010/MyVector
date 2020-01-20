@@ -26,11 +26,18 @@ class MyVector{
 		unsigned int capacity(); // to get actual capacity of a vector
 		unsigned int size(); // current size of a vector
 		void reserve(unsigned int newsize); // allocate newsize amount of memory
-		void push_back(const T &item);
 		void Clear(); // reset the vector like a new one
 
 		enum exception { MEMFAIL };
+		
+		void push_back(const T &item);
+		bool empty();
 };
+
+template <class T>
+bool MyVector<T>::empty(){
+	return vsize==0;
+}
 
 template <class T>
 MyVector<T>::MyVector(){
@@ -153,6 +160,9 @@ int main(){
 	for(int i=0 ; i<3 ; i++)
 		cout << v1[i] << " ";
 	cout << endl << "v1.size(): " << v1.size() << endl; 
-	cout << "v1.capacity(): " << v1.capacity();
+	cout << "v1.capacity(): " << v1.capacity() << endl;
+	cout << "is empty v1: " << v1.empty() << endl;
+	v1.Clear();
+	cout << "is empty v1: " << v1.empty() << endl;
 	cout << endl;
 }
