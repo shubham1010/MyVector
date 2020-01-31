@@ -15,11 +15,13 @@ void doOperations(void) {
 	MyVector<int> v1;
 
 	while(1) {
-		cout << "1: Push\n2: Reserve\n3: Size\n4: Capacity\n5: isEmpty\n6: Display\n7:Exit" << endl;
+		cout << "____________________________________________________________" << endl;
+		cout << "1: Push From Back\n2: Reserve\n3: Size\n4: Capacity\n5: isEmpty\n6: Display\n7:Pop From Back\n8:Exit"<<endl;
+		cout << "____________________________________________________________" << endl;
 		cout << "Enter your choice: ";
 		cin >> ch;
 
-		if (ch==7)
+		if (ch==8)
 			break;
 		switch(ch){
 			case 1:
@@ -41,16 +43,19 @@ void doOperations(void) {
 				break;
 			case 5:
 				if(v1.empty())
-					cout << "Vector is empty";
+					cout << "Vector is empty..!";
 				else
-					cout << "Vector is not empty";
+					cout << "Vector is not empty..!";
 				cout << endl;
 				break;
 
 			case 6:
 				v1.display();
 				break;
+			case 7:
+				v1.pop_back();
 		}
+		cout << endl;
 	}
 }
 

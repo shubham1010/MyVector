@@ -14,7 +14,7 @@ private:
 	unsigned int resize;
 	unsigned int availableSize;
 
-	const static int dyn_array_step = 128; // initial size of a vector
+	const static int dyn_array_step = 0; // initial size of a vector
 	
 	const static int dyn_array_mul = 2; // refer the blog
 	
@@ -33,8 +33,10 @@ public:
 
 	enum exception { MEMFAIL };
 	
-	void push_back(const T &item);
-	bool empty();
+	void push_back(const T &item); // push/add an element to end of the vector
+	void pop_back();
+	bool empty(); // check whether vector is empty or not
+
 
 };
 
@@ -102,31 +104,15 @@ unsigned int MyVector<T>::size() {
 	return vsize;
 }
 
-/*template <class T>
-void MyVector<T>::reserve(unsigned int newsize) {
-	vsize=newsize;
-
-	if(vsize!=0) {
-		if((vsize>vcapacity) || (vsize<vcapacity/2)) {
-			vcapacity=vsize;
-			array=(T *)realloc(array,sizeof(T)*vsize);
-
-			if(array==NULL)
-				throw MEMFAIL;
-		}
-	}
-	else
-		Clear();
-}
-*/
-
 template <class T>
-void MyVector<T>::reserve(unsigned int newsize){
-	availableSize = vcapacity-vsize;
+void MyVector<T>::reserve(unsigned int newsize) {
+	//availableSize = vcapacity-vsize;
+	if(vcapacity==0)
+		vcapacity=1;
 	if(newsize<=0)
 		Clear();
-	else if(newsize>availableSize) {
-		vcapacity*=2;
+	else if(newsize>vcapacity) {
+		vcapacity=newsize;
 		array = (T *)realloc(array,sizeof(T)*vcapacity);
 
 		if(array==NULL)
@@ -144,6 +130,8 @@ void MyVector<T>::Clear() {
 
 template <class T>
 void MyVector<T>::push_back(const T &item) {
+	if(vcapacity==0)
+		vcapacity=1;
 	vsize++;
 
 	if(vsize>vcapacity) {
@@ -158,40 +146,22 @@ void MyVector<T>::push_back(const T &item) {
 }
 
 template <class T>
-void MyVector<T>::display() {
+void MyVector<T>::display(void) {
 	for(unsigned int i=0 ; i<vsize ; i++)
 		cout << array[i] << " ";
 	
 	cout <<endl;
 }
 
-/*int main() {
-	MyVector<int> v1,v2;
 
-	for(int i=0 ; i<5 ; i++)
-		v1.push_back(i+1);
 
-	v2=v1;
-	for(int i=0 ; i<5 ; i++)
-		cout << v2[i] << " ";
-	cout << "\n";
-	cout << "v1.size: " << v1.size() << endl;
-	cout << "v2.size: " << v2.size() << endl;
-	cout << "v1.capacity: " << v1.capacity() << endl;
+template <class T>
+void MyVector<T>::pop_back(void) {
+	if(!empty()) {
+		cout << endl << array[vsize] << " is popped!" << endl;
+		vsize -= 1;	
 
-	v1.reserve(3);
-
-	for(int i=0 ; i<3 ; i++)
-		v1.push_back(i+10);
-
-	for(int i=0 ; i<3 ; i++)
-		cout << v1[i] << " ";
-	cout << endl << "v1.size(): " << v1.size() << endl; 
-	cout << "v1.capacity(): " << v1.capacity() << endl;
-	cout << "is empty v1: " << v1.empty() << endl;
-	v1.Clear();
-	cout << "is empty v1: " << v1.empty() << endl;
-	cout << endl;
-
+	}
+	else
+		cout << "Vector is already empty..!";
 }
-*/
