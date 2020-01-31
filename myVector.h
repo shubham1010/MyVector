@@ -3,44 +3,48 @@
 #include <string.h>
 using namespace std;
 
+
 template<class T>
-class MyVector{
-	private:
-		T *array;
-		unsigned int vsize;
-		unsigned int max_size;
-		unsigned int vcapacity;
-		unsigned int resize;
+class MyVector {
+private:
+	T *array;
+	unsigned int vsize;
+	unsigned int max_size;
+	unsigned int vcapacity;
+	unsigned int resize;
+	unsigned int availableSize;
 
-		const static int dyn_array_step = 128; // initial size of a vector
-		
-		const static int dyn_array_mul = 2; // refer the blog
-		
+	const static int dyn_array_step = 128; // initial size of a vector
+	
+	const static int dyn_array_mul = 2; // refer the blog
+	
 
-	public:
-		MyVector(); // constructor
-		MyVector(const MyVector &a); // copy constructor
-		~MyVector(); // distructor to free memory
-		MyVector& operator = (const MyVector &a); // assignment operator
-		T& operator [] (unsigned int index); // to get array item
-		unsigned int capacity(); // to get actual capacity of a vector
-		unsigned int size(); // current size of a vector
-		void reserve(unsigned int newsize); // allocate newsize amount of memory
-		void Clear(); // reset the vector like a new one
+public:
+	MyVector(); // constructor
+	MyVector(const MyVector &a); // copy constructor
+	~MyVector(); // distructor to free memory
+	MyVector& operator = (const MyVector &a); // assignment operator
+	T& operator [] (unsigned int index); // to get array item
+	unsigned int capacity(); // to get actual capacity of a vector
+	unsigned int size(); // current size of a vector
+	void reserve(unsigned int newsize); // allocate newsize amount of memory
+	void Clear(); // reset the vector like a new one
+	void display();
 
-		enum exception { MEMFAIL };
-		
-		void push_back(const T &item);
-		bool empty();
+	enum exception { MEMFAIL };
+	
+	void push_back(const T &item);
+	bool empty();
+
 };
 
 template <class T>
-bool MyVector<T>::empty(){
+bool MyVector<T>::empty() {
 	return vsize==0;
 }
 
 template <class T>
-MyVector<T>::MyVector(){
+MyVector<T>::MyVector() {
 	vcapacity = dyn_array_step;
 
 	vsize=0;
@@ -51,8 +55,8 @@ MyVector<T>::MyVector(){
 }
 
 template <class T>
-MyVector<T>::~MyVector(){
-	if(array){
+MyVector<T>::~MyVector() {
+	if(array) {
 		free(array);
 		array=NULL;
 		cout << "Vector is deleted successfully!" << endl;
@@ -60,7 +64,7 @@ MyVector<T>::~MyVector(){
 }
 
 template <class T>
-MyVector<T>::MyVector(const MyVector &a){
+MyVector<T>::MyVector(const MyVector &a) {
 	array = (T *)malloc(sizeof(T)*a.vcapacity);
 	if(array==NULL)
 		throw MEMFAIL;
@@ -71,7 +75,7 @@ MyVector<T>::MyVector(const MyVector &a){
 }
 
 template <class T>
-MyVector<T>& MyVector<T>:: operator = (const MyVector &a){
+MyVector<T>& MyVector<T>:: operator = (const MyVector &a) {
 	if(this == &a)
 		return *this;
 	if (a.vsize==0)
@@ -84,26 +88,26 @@ MyVector<T>& MyVector<T>:: operator = (const MyVector &a){
 }
 
 template <class T>
-T& MyVector<T>::operator [] (unsigned int index){
+T& MyVector<T>::operator [] (unsigned int index) {
 	return array[index];
 }
 
 template <class T>
-unsigned int MyVector<T>::capacity(){
+unsigned int MyVector<T>::capacity() {
 	return vcapacity;
 }
 
 template <class T>
-unsigned int MyVector<T>::size(){
+unsigned int MyVector<T>::size() {
 	return vsize;
 }
 
-template <class T>
-void MyVector<T>::reserve(unsigned int newsize){
+/*template <class T>
+void MyVector<T>::reserve(unsigned int newsize) {
 	vsize=newsize;
 
-	if(vsize!=0){
-		if((vsize>vcapacity) || (vsize<vcapacity/2)){
+	if(vsize!=0) {
+		if((vsize>vcapacity) || (vsize<vcapacity/2)) {
 			vcapacity=vsize;
 			array=(T *)realloc(array,sizeof(T)*vsize);
 
@@ -114,9 +118,24 @@ void MyVector<T>::reserve(unsigned int newsize){
 	else
 		Clear();
 }
+*/
 
 template <class T>
-void MyVector<T>::Clear(){
+void MyVector<T>::reserve(unsigned int newsize){
+	availableSize = vcapacity-vsize;
+	if(newsize<=0)
+		Clear();
+	else if(newsize>availableSize) {
+		vcapacity*=2;
+		array = (T *)realloc(array,sizeof(T)*vcapacity);
+
+		if(array==NULL)
+			throw MEMFAIL;
+	}
+}
+
+template <class T>
+void MyVector<T>::Clear() {
 	vsize=0;
 	array=(T *)realloc(array,sizeof(T)*dyn_array_step);
 
@@ -124,10 +143,10 @@ void MyVector<T>::Clear(){
 }
 
 template <class T>
-void MyVector<T>::push_back(const T &item){
+void MyVector<T>::push_back(const T &item) {
 	vsize++;
 
-	if(vsize>vcapacity){
+	if(vsize>vcapacity) {
 		vcapacity *= dyn_array_mul;
 
 		array = (T *)realloc(array,sizeof(T)*vcapacity);
@@ -138,7 +157,15 @@ void MyVector<T>::push_back(const T &item){
 	array[vsize-1] = item;
 }
 
-int main(){
+template <class T>
+void MyVector<T>::display() {
+	for(unsigned int i=0 ; i<vsize ; i++)
+		cout << array[i] << " ";
+	
+	cout <<endl;
+}
+
+/*int main() {
 	MyVector<int> v1,v2;
 
 	for(int i=0 ; i<5 ; i++)
@@ -165,4 +192,6 @@ int main(){
 	v1.Clear();
 	cout << "is empty v1: " << v1.empty() << endl;
 	cout << endl;
+
 }
+*/
